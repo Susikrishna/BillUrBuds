@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 class AddExpense extends StatefulWidget {
@@ -86,7 +84,6 @@ class _AddExpenseState extends State<AddExpense> {
                                   controller[index].text = "Excluded";
                                   expense[index] = -1;
                                 }
-                                print(included);
                               });
                             },
                           ),

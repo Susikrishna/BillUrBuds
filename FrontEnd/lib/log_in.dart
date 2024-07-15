@@ -114,7 +114,7 @@ class _LoginState extends State<Login> {
                         sharedPreferences.setString(
                             "username", usernameController.text);
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => MainMenu()));
+                            MaterialPageRoute(builder: (context) => const MainMenu()));
                       } else if (jsonResponse["message"] == "username") {
                         usernameController.clear();
                         passwordController.clear();

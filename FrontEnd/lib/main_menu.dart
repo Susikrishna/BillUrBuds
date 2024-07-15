@@ -57,7 +57,7 @@ class _MainMenuState extends State<MainMenu> {
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () async{
-            await Navigator.push(context, MaterialPageRoute(builder: (context) => AddGroup()));
+            await Navigator.push(context, MaterialPageRoute(builder: (context) => const AddGroup()));
             await showGroups();
             setState(() {});
           },

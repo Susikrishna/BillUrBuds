@@ -38,7 +38,7 @@ class _AddGroupState extends State<AddGroup> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           "Create Your Group",
           style: TextStyle(color: Colors.white),
@@ -209,7 +209,7 @@ class _AddGroupState extends State<AddGroup> {
 }
 
 class AddMembers extends StatefulWidget {
-  AddMembers(this.friendsList, this.chosen, {super.key});
+  const AddMembers(this.friendsList, this.chosen, {super.key});
 
   final List<dynamic> friendsList;
   final List<bool> chosen;
