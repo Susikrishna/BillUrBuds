@@ -26,7 +26,6 @@ class _MainMenuState extends State<MainMenu> {
         headers: {"Content-Type": "application/json"}, body: jsonEncode(input));
     var jsonResponse = jsonDecode(response.body);
     groups = jsonResponse["Data"];
-    print(groups);
   }
 
   @override

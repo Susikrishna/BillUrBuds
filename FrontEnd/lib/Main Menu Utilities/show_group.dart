@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:bill_ur_buds/urls.dart';
 import 'add_expense.dart';
 
+//ignore: must_be_immutable
 class ShowGroup extends StatefulWidget {
   ShowGroup(this.groupInfo, {super.key});
 

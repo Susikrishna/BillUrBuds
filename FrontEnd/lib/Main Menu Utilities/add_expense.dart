@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//ignore: must_be_immutable
 class AddExpense extends StatefulWidget {
   AddExpense(this.groupInfo, {super.key});
 
