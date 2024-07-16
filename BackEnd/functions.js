@@ -19,6 +19,7 @@ exports.login = async (req, res) => {
 exports.signin = async (req, res) => {
   try {
     const { username, password } = req.body;
+    console.log(username, password);
     if ((await UserInfoModel.findOne({ username: username })) != null) {
       res.json({ message: "username" });
     } else {
@@ -87,17 +88,20 @@ exports.addGroup = async (req, res) => {
     expenses: [],
     balances: [],
     toPay: [],
+    paid: Array.from({ length: members.length }, (_) =>
+      new Array(members.length).fill(0)
+    ),
   });
   newGroup["balances"].length = members.length;
   newGroup["balances"].fill(0);
   await newGroup.save();
-  console.log(newGroup);
   res.json({ message: "Group Added" });
 };
 
 exports.showGroup = async (req, res) => {
   let { username } = req.body;
   let search = await groupInfoModel.find({ members: username });
+  console.log(search);
   res.json({ Data: search });
 };
 
@@ -110,8 +114,12 @@ exports.deleteGroup = async (req, res) => {
 exports.addExpense = async (req, res) => {
   let { _id, expenseName, expense } = req.body;
 
-  let groupInfo = await groupInfoModel.findOne({ _id: _id }, { balances: 1 });
+  let groupInfo = await groupInfoModel.findOne(
+    { _id: _id },
+    { balances: 1, paid: 1 }
+  );
   let balances = groupInfo["balances"];
+  let paid = groupInfo["paid"];
   let toPay = Array.from({ length: balances.length }, (_) =>
     new Array(balances.length).fill(0)
   );
@@ -264,18 +272,21 @@ exports.payMoney = async (req, res) => {
   let { _id, index1, index2, amount } = req.body;
   var data = await groupInfoModel.findOne(
     { _id: _id },
-    { toPay: 1, balances: 1 }
+    { toPay: 1, balances: 1, paid: 1 }
   );
   var toPay = data["toPay"];
   var balances = data["balances"];
+  var paid = data["paid"];
   balances[index1] += amount;
   balances[index2] -= amount;
   toPay[index1][index2] += amount;
   toPay[index2][index1] -= amount;
+  paid[index1][index2] -= amount;
+  paid[index2][index1] += amount;
   await groupInfoModel.updateOne(
     { _id: _id },
     {
-      $set: { balances: balances, toPay: toPay },
+      $set: { balances: balances, toPay: toPay, paid: paid },
     }
   );
   res.json({ message: "Done" });

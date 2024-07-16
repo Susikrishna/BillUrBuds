@@ -28,12 +28,9 @@ class _LoginState extends State<Login> {
         home: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          backgroundColor: Colors.black,
           centerTitle: true,
-          title: const Text(
-            "LOG IN",
-            style: TextStyle(
-              color: Colors.black,
-            ),
+          title: const Text("LOG IN", style: TextStyle(color: Colors.white),
           ),
         ),
         body: Center(
@@ -41,6 +38,8 @@ class _LoginState extends State<Login> {
             padding: const EdgeInsets.all(30),
             child: Column(
               children: [
+                const SizedBox(height: 10),
+                const Text("Please, Log in to continue", style: TextStyle(color: Colors.black, fontSize: 18)),
                 const SizedBox(height: 30),
                 TextField(
                   controller: usernameController,
@@ -50,14 +49,9 @@ class _LoginState extends State<Login> {
                       color: Colors.black,
                     ),
                     hintText: "Username",
-                    errorText: invalidUsername
-                        ? "username doesn't exist!!"
-                        : usernameError
-                            ? "Cannot be empty"
-                            : null,
+                    errorText: invalidUsername ? "username doesn't exist!!" : usernameError ? "Cannot be empty" : null,
                     enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: Colors.black, width: 3.5),
+                      borderSide: const BorderSide(color: Colors.black, width: 3.5),
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
@@ -70,24 +64,18 @@ class _LoginState extends State<Login> {
                       Icons.password_outlined,
                       color: Colors.black,
                     ),
-                    errorText: invalidPassword
-                        ? "Password is wrong"
-                        : passwordError
-                            ? "Cannot be empty"
-                            : null,
+                    errorText: invalidPassword ? "Password is wrong" : passwordError ? "Cannot be empty" : null,
                     hintText: "Password",
                     enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: Colors.black, width: 3.5),
+                      borderSide: const BorderSide(color: Colors.black, width: 3.5),
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () async {
-                    if (usernameController.text.toString() == "" ||
-                        passwordController.text.toString() == "") {
+                    if (usernameController.text.toString() == "" || passwordController.text.toString() == "") {
                       if (usernameController.text.toString() == "") {
                         usernameError = true;
                       } else {
@@ -108,13 +96,11 @@ class _LoginState extends State<Login> {
                           headers: {"Content-Type": "application/json"},
                           body: jsonEncode(input));
                       var jsonResponse = jsonDecode(response.body);
+
                       if (jsonResponse["message"] == "success") {
-                        SharedPreferences sharedPreferences =
-                            await SharedPreferences.getInstance();
-                        sharedPreferences.setString(
-                            "username", usernameController.text);
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => const MainMenu()));
+                        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                        sharedPreferences.setString("username", usernameController.text);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const MainMenu()));
                       } else if (jsonResponse["message"] == "username") {
                         usernameController.clear();
                         passwordController.clear();
@@ -138,13 +124,12 @@ class _LoginState extends State<Login> {
                             color: Colors.grey,
                             blurRadius: 10.0,
                           ),
-                        ]),
+                        ]
+                    ),
                     width: 80,
                     height: 50,
                     child: const Center(
-                      child: Text(
-                        "Login",
-                        style: TextStyle(fontSize: 20, color: Colors.white),
+                      child: Text("Log In", style: TextStyle(fontSize: 20, color: Colors.white),
                       ),
                     ),
                   ),
@@ -153,8 +138,7 @@ class _LoginState extends State<Login> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Don't have an account ?  ",
-                        style: TextStyle(color: Colors.black, fontSize: 20)),
+                    const Text("Don't have an account ?  ", style: TextStyle(color: Colors.black, fontSize: 20)),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(context,
@@ -169,14 +153,12 @@ class _LoginState extends State<Login> {
                                 color: Colors.grey,
                                 blurRadius: 10.0,
                               ),
-                            ]),
+                            ]
+                        ),
                         width: 90,
                         height: 50,
                         child: const Center(
-                          child: Text(
-                            "Sign In",
-                            style: TextStyle(fontSize: 20, color: Colors.black),
-                          ),
+                          child: Text("Sign In", style: TextStyle(fontSize: 20, color: Colors.black),),
                         ),
                       ),
                     )

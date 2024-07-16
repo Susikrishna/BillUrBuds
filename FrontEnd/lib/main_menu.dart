@@ -22,10 +22,10 @@ class _MainMenuState extends State<MainMenu> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var username = sharedPreferences.getString("username");
     var input = {"username": username};
-    var response = await http.post(Uri.parse(showGroupUrl),
-        headers: {"Content-Type": "application/json"}, body: jsonEncode(input));
+    var response = await http.post(Uri.parse(showGroupUrl), headers: {"Content-Type": "application/json"}, body: jsonEncode(input));
     var jsonResponse = jsonDecode(response.body);
     groups = jsonResponse["Data"];
+    print(groups);
   }
 
   @override
@@ -49,40 +49,27 @@ class _MainMenuState extends State<MainMenu> {
         appBar: AppBar(
           iconTheme: const IconThemeData(color: Colors.white),
           backgroundColor: Colors.black,
-          title: const Text(
-            "BILL UR BUDS",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
+          title: const Text("BILL UR BUDS", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () async{
             await Navigator.push(context, MaterialPageRoute(builder: (context) => const AddGroup()));
-            await showGroups();
-            setState(() {});
+            showGroups().then((value) {
+              setState(() {});
+            });
           },
           backgroundColor: Colors.white,
-          label: const Text(
-            "Add Group",
-            style: TextStyle(fontSize: 20, color: Colors.black),
-          ),
-          icon: const Icon(
-            Icons.add,
-            color: Colors.black,
-            size: 30,
-          ),
+          label: const Text("Add Group", style: TextStyle(fontSize: 20, color: Colors.black)),
+          icon: const Icon(Icons.add, color: Colors.black, size: 30),
         ),
         body: ListView.builder(
             itemCount: groups.length,
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () async{
-                  await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ShowGroup(groups[index])));
-                  showGroups().then((value) {
-                    setState(() {});
-                  });
+                  await Navigator.push(context, MaterialPageRoute(builder: (context) => ShowGroup(groups[index])));
+                  await showGroups();
+                  setState(() {});
                 },
                 child: Card(
                   margin: const EdgeInsets.all(10),
@@ -103,8 +90,7 @@ class _MainMenuState extends State<MainMenu> {
                           )),
                       child: Row(
                         children: [
-                          Text(
-                            "  ${groups[index]["groupName"]}",
+                          Text("  ${groups[index]["groupName"]}",
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

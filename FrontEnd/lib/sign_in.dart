@@ -25,21 +25,17 @@ class _SignInState extends State<SignIn> {
       home: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          backgroundColor: Colors.black,
           centerTitle: true,
-          title: const Text(
-            "SIGN IN",
-            style: TextStyle(
-              color: Colors.black,
-            ),
-          ),
+          title: const Text("SIGN IN", style: TextStyle(color: Colors.white)),
         ),
         body: Center(
           child: Container(
             padding: const EdgeInsets.all(30),
             child: Column(
               children: [
-                const Text("Please, Sign Up if you don't have a account",
-                    style: TextStyle(color: Colors.black, fontSize: 18)),
+                const SizedBox(height: 10),
+                const Text("Please, Sign Up if you don't have a account", style: TextStyle(color: Colors.black, fontSize: 18)),
                 const SizedBox(height: 30),
                 TextField(
                   controller: usernameController,
@@ -49,15 +45,10 @@ class _SignInState extends State<SignIn> {
                       color: Colors.black,
                     ),
                     hintText: "Username",
-                    errorText: usernameAlreadyExists
-                        ? "Username already exists. Try another!!"
-                        : invalidUsername
-                            ? "Cannot be empty"
-                            : null,
+                    errorText: usernameAlreadyExists ? "Username already exists. Try another!!" : invalidUsername ? "Cannot be empty" : null,
                     errorStyle: const TextStyle(color: Colors.red),
                     enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: Colors.black, width: 3.5),
+                      borderSide: const BorderSide(color: Colors.black, width: 3.5),
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
@@ -74,17 +65,15 @@ class _SignInState extends State<SignIn> {
                     errorText: invalidPassword ? "Cannot be empty" : null,
                     errorStyle: const TextStyle(color: Colors.red),
                     enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: Colors.black, width: 3.5),
+                      borderSide: const BorderSide(color: Colors.black, width: 3.5),
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () async {
-                    if (usernameController.text.toString() == "" ||
-                        passwordController.text.toString() == "") {
+                    if (usernameController.text.toString() == "" || passwordController.text.toString() == "") {
                       if (usernameController.text.toString() == "") {
                         invalidUsername = true;
                       } else {
@@ -106,13 +95,13 @@ class _SignInState extends State<SignIn> {
                           body: jsonEncode(input));
                       var jsonResponse = jsonDecode(response.body);
                       if (jsonResponse["message"] == "success") {
-                        Navigator.push(
-                            context,
+                        Navigator.push(context,
                             MaterialPageRoute(
                                 builder: (context) => const Login()));
                       } else if (jsonResponse["message"] == "username") {
                         usernameController.clear();
                         passwordController.clear();
+                        invalidPassword = (invalidUsername=false);
                         usernameAlreadyExists = true;
                         setState(() {});
                       }
@@ -127,14 +116,12 @@ class _SignInState extends State<SignIn> {
                             color: Colors.grey,
                             blurRadius: 10.0,
                           ),
-                        ]),
+                        ]
+                    ),
                     width: 100,
                     height: 50,
                     child: const Center(
-                      child: Text(
-                        "Sign Up",
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      ),
+                      child: Text("Sign Up", style: TextStyle(fontSize: 20, color: Colors.white)),
                     ),
                   ),
                 ),
@@ -148,8 +135,7 @@ class _SignInState extends State<SignIn> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => const Login()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const Login()));
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -165,7 +151,7 @@ class _SignInState extends State<SignIn> {
                         height: 50,
                         child: const Center(
                           child: Text(
-                            "Login",
+                            "Log In",
                             style: TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),

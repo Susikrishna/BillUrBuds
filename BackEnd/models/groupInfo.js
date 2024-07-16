@@ -6,7 +6,8 @@ const groupInfoSchema = new mongoose.Schema({
   members: [String],
   expenses: [{ expenseName: String, expense: [Number] }],
   balances: [Number],
-  toPay: [[Number]]
+  toPay: [[Number]],
+  paid: [[Number]]
 });
 
 const groupInfoModel = connection.model("groupInfo", groupInfoSchema);
