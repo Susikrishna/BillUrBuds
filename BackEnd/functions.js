@@ -19,7 +19,6 @@ exports.login = async (req, res) => {
 exports.signin = async (req, res) => {
   try {
     const { username, password } = req.body;
-    console.log(username, password);
     if ((await UserInfoModel.findOne({ username: username })) != null) {
       res.json({ message: "username" });
     } else {
@@ -101,7 +100,6 @@ exports.addGroup = async (req, res) => {
 exports.showGroup = async (req, res) => {
   let { username } = req.body;
   let search = await groupInfoModel.find({ members: username });
-  console.log(search);
   res.json({ Data: search });
 };
 
@@ -119,7 +117,6 @@ exports.addExpense = async (req, res) => {
     { balances: 1, paid: 1 }
   );
   let balances = groupInfo["balances"];
-  let paid = groupInfo["paid"];
   let toPay = Array.from({ length: balances.length }, (_) =>
     new Array(balances.length).fill(0)
   );
@@ -139,11 +136,13 @@ exports.addExpense = async (req, res) => {
 
   //Changing Balances
   for (let i = 0; i < balances.length; i++) {
-    if (expense != -1) {
-      balances[i] += Math.round((expense[i] - money) * 100) / 100;
+    if (expense[i] != -1) {
+      balances[i] += expense[i] - money;
+      balances[i] = Math.round(balances[i] * 100) / 100;
     }
   }
 
+  console.log(balances);
   //Changing toPay
   function compare1(a, b) {
     return a[0] - b[0];
@@ -170,15 +169,27 @@ exports.addExpense = async (req, res) => {
       Owe.push([negative[0] + positive[0], negative[1]]);
       Owe.sort(compare2);
       toPay[negative[1]][positive[1]] = -positive[0];
+      toPay[negative[1]][positive[1]] =
+        Math.round(toPay[negative[1]][positive[1]] * 100) / 100;
       toPay[positive[1]][negative[1]] = positive[0];
+      toPay[positive[1]][negative[1]] =
+        Math.round(toPay[positive[1]][negative[1]] * 100) / 100;
     } else if (-negative[0] < positive[0]) {
       Lend.push([negative[0] + positive[0], positive[1]]);
       Lend.sort(compare1);
       toPay[negative[1]][positive[1]] = negative[0];
+      toPay[negative[1]][positive[1]] =
+        Math.round(toPay[negative[1]][positive[1]] * 100) / 100;
       toPay[positive[1]][negative[1]] = -negative[0];
+      toPay[positive[1]][negative[1]] =
+        Math.round(toPay[positive[1]][negative[1]] * 100) / 100;
     } else {
       toPay[negative[1]][positive[1]] = -positive[0];
+      toPay[negative[1]][positive[1]] =
+        Math.round(toPay[negative[1]][positive[1]] * 100) / 100;
       toPay[positive[1]][negative[1]] = positive[0];
+      toPay[positive[1]][negative[1]] =
+        Math.round(toPay[positive[1]][negative[1]] * 100) / 100;
     }
   }
   //Adding the new expense
@@ -215,9 +226,11 @@ exports.deleteExpense = async (req, res) => {
   money = Math.round(money * 100) / 100;
   for (let i = 0; i < balances.length; i++) {
     if (data["expense"][i] != -1) {
-      balances[i] -= Math.round((data["expense"][i] - money) * 100) / 100;
+      balances[i] -= data["expense"][i] - money;
+      balances[i] = Math.round(balances[i] * 100) / 100;
     }
   }
+  console.log(balances);
 
   //Updating toPay
   let toPay = Array.from({ length: balances.length }, (_) =>
@@ -248,15 +261,27 @@ exports.deleteExpense = async (req, res) => {
       Owe.push([negative[0] + positive[0], negative[1]]);
       Owe.sort(compare2);
       toPay[negative[1]][positive[1]] = -positive[0];
+      toPay[negative[1]][positive[1]] =
+        Math.round(toPay[negative[1]][positive[1]] * 100) / 100;
       toPay[positive[1]][negative[1]] = positive[0];
+      toPay[positive[1]][negative[1]] =
+        Math.round(toPay[positive[1]][negative[1]] * 100) / 100;
     } else if (-negative[0] < positive[0]) {
       Lend.push([negative[0] + positive[0], positive[1]]);
       Lend.sort(compare1);
       toPay[negative[1]][positive[1]] = negative[0];
+      toPay[negative[1]][positive[1]] =
+        Math.round(toPay[negative[1]][positive[1]] * 100) / 100;
       toPay[positive[1]][negative[1]] = -negative[0];
+      toPay[positive[1]][negative[1]] =
+        Math.round(toPay[positive[1]][negative[1]] * 100) / 100;
     } else {
       toPay[negative[1]][positive[1]] = -positive[0];
+      toPay[negative[1]][positive[1]] =
+        Math.round(toPay[negative[1]][positive[1]] * 100) / 100;
       toPay[positive[1]][negative[1]] = positive[0];
+      toPay[positive[1]][negative[1]] =
+        Math.round(toPay[positive[1]][negative[1]] * 100) / 100;
     }
   }
 
@@ -280,9 +305,13 @@ exports.payMoney = async (req, res) => {
   balances[index1] += amount;
   balances[index2] -= amount;
   toPay[index1][index2] += amount;
+  toPay[index1][index2] = Math.round(toPay[index1][index2] * 100) / 100;
   toPay[index2][index1] -= amount;
+  toPay[index2][index1] = Math.round(toPay[index2][index1] * 100) / 100;
   paid[index1][index2] -= amount;
+  paid[index1][index2] = Math.round(paid[index1][index2] * 100) / 100;
   paid[index2][index1] += amount;
+  paid[index2][index1] = Math.round(paid[index2][index1] * 100) / 100;
   await groupInfoModel.updateOne(
     { _id: _id },
     {

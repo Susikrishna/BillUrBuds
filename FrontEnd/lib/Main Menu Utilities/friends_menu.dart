@@ -44,14 +44,15 @@ class _FriendsMenuState extends State<FriendsMenu> {
           showDialog(
               context: context,
               builder: (BuildContext context) => AlertDialog(
+                      backgroundColor: Colors.white,
                       title: const Center(child: Text('Find your Friend')),
                       content: SizedBox(
                         width: 300,
-                        height: 250,
+                        height: 50,
                         child: Column(
                           children: [
                             TextField(
-                              // onChanged: (s) {},
+                              onChanged: (s) {},
                               controller: friendUsername,
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.search,color: Colors.black,),
@@ -66,13 +67,15 @@ class _FriendsMenuState extends State<FriendsMenu> {
                       ),
                       actions: [
                         ElevatedButton(
-                          child: const Text('Cancel'),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                          child: const Text('Cancel',style: TextStyle(color: Colors.white)),
                           onPressed: () {
                             Navigator.pop(context);
                           },
                         ),
                         ElevatedButton(
-                          child: const Text('OK'),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                          child: const Text('OK',style: TextStyle(color: Colors.white)),
                           onPressed: () async {
                             SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
                             var username = sharedPreferences.getString("username");

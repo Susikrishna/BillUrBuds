@@ -159,12 +159,13 @@ class _ShowGroupState extends State<ShowGroup> {
                                     )
                                   ],
                                 ),
+                                const Text("Included:",style: TextStyle(fontSize: 25)),
                                 ListView.builder(
                                     shrinkWrap: true,
                                     itemCount: widget.groupInfo["expenses"][index]["expense"].length,
                                     itemBuilder:
                                         (BuildContext context, int index1) {
-                                      if (widget.groupInfo["expenses"][index]["expense"][index1] > 0) {
+                                      if (widget.groupInfo["expenses"][index]["expense"][index1] >= 0) {
                                         return Text(
                                           "${widget.groupInfo["members"][index1]}: ₹${widget.groupInfo["expenses"][index]["expense"][index1]}",
                                           style: const TextStyle(fontSize: 23),
@@ -263,7 +264,7 @@ class _ShowGroupState extends State<ShowGroup> {
                                                             "_id": widget.groupInfo["_id"],
                                                             "index1": userIndex,
                                                             "index2": index,
-                                                            "amount": int.parse(amountController.text)
+                                                            "amount": double.parse(amountController.text)
                                                           };
                                                           await http.post(
                                                               Uri.parse(payMoneyUrl),
