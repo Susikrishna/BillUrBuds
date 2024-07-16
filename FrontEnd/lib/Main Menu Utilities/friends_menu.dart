@@ -37,7 +37,7 @@ class _FriendsMenuState extends State<FriendsMenu> {
       backgroundColor: Colors.black,
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.white,
-        onPressed: () {
+        onPressed: () async{
           TextEditingController friendUsername = TextEditingController();
           bool validFriend = true;
           bool alreadyFriend = false;
@@ -96,7 +96,9 @@ class _FriendsMenuState extends State<FriendsMenu> {
                               alreadyFriend = false;
                               setState(() {});
                             } else if (jsonResponse["message"] == "Added Friend") {
-                              showFriends();
+                              showFriends().then((value) {
+                                setState(() {});
+                              });
                               Navigator.pop(context);
                             }
                           },
@@ -104,7 +106,6 @@ class _FriendsMenuState extends State<FriendsMenu> {
                       ]
               )
           );
-          setState(() {});
         },
         label: const Text(
           "Add Friend",
