@@ -41,34 +41,26 @@ exports.signin = async (req, res) => {
 
 exports.addfriend = async (req, res) => {
   const { username, friendUsername } = req.body;
-  if (
+  if (username == friendUsername) {
+    res.json({ message: "That's You" });
+  } else if (
     (await friendInfoModel.findOne({
       username: username,
       friends: friendUsername,
     })) != null
   ) {
-    res.json({ message: "Friend Already exists" });
+    res.json({ message: "Already a Friend" });
   } else {
     if ((await UserInfoModel.findOne({ username: friendUsername })) != null) {
       await friendInfoModel.updateOne(
         { username: username },
-        {
-          $push: {
-            friends: friendUsername,
-          },
-        }
+        { $push: { friends: friendUsername } }
       );
       await friendInfoModel.updateOne(
         { username: friendUsername },
-        {
-          $push: {
-            friends: username,
-          },
-        }
+        { $push: { friends: username } }
       );
       res.json({ message: "Added Friend" });
-    } else {
-      res.json({ message: "Friend Username Wrong" });
     }
   }
 };
@@ -77,6 +69,20 @@ exports.showfriend = async (req, res) => {
   let { username } = req.body;
   let search = await friendInfoModel.findOne({ username: username });
   res.json({ List: search["friends"] });
+};
+
+exports.findFriends = async (req, res) => {
+  let { partialUserId } = req.body;
+  let search;
+  if (partialUserId != "") {
+    search = await UserInfoModel.find(
+      { username: { $regex: new RegExp(`^${partialUserId}`) } },
+      { username: 1 }
+    ).limit(5);
+  } else {
+    search = [];
+  }
+  res.json({ search: search });
 };
 
 exports.addGroup = async (req, res) => {
@@ -142,7 +148,6 @@ exports.addExpense = async (req, res) => {
     }
   }
 
-  console.log(balances);
   //Changing toPay
   function compare1(a, b) {
     return a[0] - b[0];
@@ -168,28 +173,16 @@ exports.addExpense = async (req, res) => {
     if (-negative[0] > positive[0]) {
       Owe.push([negative[0] + positive[0], negative[1]]);
       Owe.sort(compare2);
-      toPay[negative[1]][positive[1]] = -positive[0];
-      toPay[negative[1]][positive[1]] =
-        Math.round(toPay[negative[1]][positive[1]] * 100) / 100;
-      toPay[positive[1]][negative[1]] = positive[0];
-      toPay[positive[1]][negative[1]] =
-        Math.round(toPay[positive[1]][negative[1]] * 100) / 100;
+      toPay[negative[1]][positive[1]] = Math.round(-positive[0] * 100) / 100;
+      toPay[positive[1]][negative[1]] = Math.round(positive[0] * 100) / 100;
     } else if (-negative[0] < positive[0]) {
       Lend.push([negative[0] + positive[0], positive[1]]);
       Lend.sort(compare1);
-      toPay[negative[1]][positive[1]] = negative[0];
-      toPay[negative[1]][positive[1]] =
-        Math.round(toPay[negative[1]][positive[1]] * 100) / 100;
-      toPay[positive[1]][negative[1]] = -negative[0];
-      toPay[positive[1]][negative[1]] =
-        Math.round(toPay[positive[1]][negative[1]] * 100) / 100;
+      toPay[negative[1]][positive[1]] = Math.round(negative[0] * 100) / 100;
+      toPay[positive[1]][negative[1]] = Math.round(-negative[0] * 100) / 100;
     } else {
-      toPay[negative[1]][positive[1]] = -positive[0];
-      toPay[negative[1]][positive[1]] =
-        Math.round(toPay[negative[1]][positive[1]] * 100) / 100;
-      toPay[positive[1]][negative[1]] = positive[0];
-      toPay[positive[1]][negative[1]] =
-        Math.round(toPay[positive[1]][negative[1]] * 100) / 100;
+      toPay[negative[1]][positive[1]] = Math.round(-positive[0] * 100) / 100;
+      toPay[positive[1]][negative[1]] = Math.round(positive[0] * 100) / 100;
     }
   }
   //Adding the new expense
@@ -230,7 +223,6 @@ exports.deleteExpense = async (req, res) => {
       balances[i] = Math.round(balances[i] * 100) / 100;
     }
   }
-  console.log(balances);
 
   //Updating toPay
   let toPay = Array.from({ length: balances.length }, (_) =>
@@ -260,28 +252,16 @@ exports.deleteExpense = async (req, res) => {
     if (-negative[0] > positive[0]) {
       Owe.push([negative[0] + positive[0], negative[1]]);
       Owe.sort(compare2);
-      toPay[negative[1]][positive[1]] = -positive[0];
-      toPay[negative[1]][positive[1]] =
-        Math.round(toPay[negative[1]][positive[1]] * 100) / 100;
-      toPay[positive[1]][negative[1]] = positive[0];
-      toPay[positive[1]][negative[1]] =
-        Math.round(toPay[positive[1]][negative[1]] * 100) / 100;
+      toPay[negative[1]][positive[1]] = Math.round(-positive[0] * 100) / 100;
+      toPay[positive[1]][negative[1]] =Math.round(positive[0] * 100) / 100;
     } else if (-negative[0] < positive[0]) {
       Lend.push([negative[0] + positive[0], positive[1]]);
       Lend.sort(compare1);
-      toPay[negative[1]][positive[1]] = negative[0];
-      toPay[negative[1]][positive[1]] =
-        Math.round(toPay[negative[1]][positive[1]] * 100) / 100;
-      toPay[positive[1]][negative[1]] = -negative[0];
-      toPay[positive[1]][negative[1]] =
-        Math.round(toPay[positive[1]][negative[1]] * 100) / 100;
+      toPay[negative[1]][positive[1]] = Math.round(negative[0] * 100) / 100;
+      toPay[positive[1]][negative[1]] = Math.round(-negative[0] * 100) / 100;
     } else {
-      toPay[negative[1]][positive[1]] = -positive[0];
-      toPay[negative[1]][positive[1]] =
-        Math.round(toPay[negative[1]][positive[1]] * 100) / 100;
-      toPay[positive[1]][negative[1]] = positive[0];
-      toPay[positive[1]][negative[1]] =
-        Math.round(toPay[positive[1]][negative[1]] * 100) / 100;
+      toPay[negative[1]][positive[1]] = Math.round(-positive[0] * 100) / 100;
+      toPay[positive[1]][negative[1]] = Math.round(positive[0] * 100) / 100;
     }
   }
 

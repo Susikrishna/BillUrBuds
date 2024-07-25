@@ -104,6 +104,16 @@ class _MainMenuState extends State<MainMenu> {
                               ],
                             ),
                           ),
+                          const Spacer(),
+                          IconButton(
+                              onPressed: () async{
+                                var input = {"_id":groups[index]["_id"]};
+                                await http.delete(Uri.parse(deleteGroupUrl),headers: {"Content-Type": "application/json"},body: jsonEncode(input));
+                                await showGroups();
+                                setState(() {});
+                              },
+                              icon: const Icon(Icons.delete,color: Colors.red,size: 32,)
+                          )
                         ],
                       ),
                     ),
